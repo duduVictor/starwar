@@ -1,35 +1,32 @@
-import React from "react";
-import ReactDOM from 'react-dom';
+import React, { Component } from 'react';
 import Modal from 'react-modal';
-import "../App.css";
+import MyModal from './modal';
+
 
 export default class Characters extends React.Component{
-    constructor(props){
- 
-  super(props);
-  this.state = {
-	  loading: true,
-    query: "",
-    showModal: false,
+  constructor (props) {
+    super(props);
+    this.state = {
+	loading: true,
+    	query: "",
+      showModal: false,
 	  people: []
-  };
-  
-    
-} 
+    };
 token = null;
-
-handleOpenModal = this.handleOpenModal.bind(this);
-handleCloseModal = this.handleCloseModal.bind(this);
+    
+    handleOpenModal = this.handleOpenModal.bind(this);
+    handleCloseModal = this.handleCloseModal.bind(this);
+  }
   
-handleOpenModal () {
-  this.setState({ showModal: true });
-}
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
 
-handleCloseModal () {
-  this.setState({ showModal: false });
-}
-
-  onChange = (e) => {
+onChange = (e) => {
     const { value } = e.target;
     this.setState({
       query: value
@@ -37,8 +34,6 @@ handleCloseModal () {
 
     this.search(value);
   };
-
-
   search = query => {
     const url = `https://swapi.co/api/people?search=${query}`;
     const token = {};
@@ -53,21 +48,15 @@ handleCloseModal () {
       });
   };
 
+
   componentDidMount() {
     this.search("");
   }
   componentWillUnmount() {
     clearInterval(this.search(""));
   }
-
-
-  toggleVisibility(){
-    this.setState({
-    visibility: false
-    })
-    }
-
-  render() {
+  
+  render () {
 	if(this.state.loading){
         return <div>loading....</div>;
     }
@@ -75,17 +64,10 @@ handleCloseModal () {
     if(!this.state.people) {
         return <div>Didn't find A character</div>;
     }
-   
-    
-    return (
-        <div>
-        <div>
     <h1>Characters</h1>
 
-    </div>
-        <div>
-            <form>
-                <div>
+    return (
+<div>
                     <input
                         type="text"
                         className="search-box"
@@ -93,20 +75,20 @@ handleCloseModal () {
                         onChange={this.onChange}
                     />
                     </div>
-                <div> 
-                        {this.state.people.map(person => (
-                        <p key={person.name}>
-                            {person.name}
-                        </p>
-                        
-                        
-                    
-                        ))}       
-                </div>
-            </form>
-      </div>
+      <div>
+        <button onClick={this.handleOpenModal}>{person.name}</button>
+        <ReactModal 
+           isOpen={this.state.showModal}
+           onRequestClose={this.handleCloseModal}
+           shouldCloseOnOverlayClick={false}
+        >
+          <p>{person.gender}</p>
+          <p>{person.height}</p>
+          <p>{person.homeworld}</p>
+
+          <button onClick={this.handleCloseModal}>Close Modal</button>
+        </ReactModal>
       </div>
     );
-    
   }
 }
